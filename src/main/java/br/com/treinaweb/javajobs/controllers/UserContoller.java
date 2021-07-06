@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,11 @@ public class UserContoller {
     @PostMapping("/auth")
     public JwtResponse auth(@RequestBody @Valid UserDTO userDTO) {
         return authenticationService.createJwtResponse(userDTO);
+    }
+
+    @PostMapping("/refresh/{refreshToken}")
+    public JwtResponse refresh(@PathVariable String refreshToken) {
+        return authenticationService.createJwtResponse(refreshToken);
     }
 
 }
