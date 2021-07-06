@@ -1,6 +1,6 @@
 package br.com.treinaweb.javajobs.services;
 
-import javax.validation.Valid;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +26,9 @@ public class AuthenticationService implements UserDetailsService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private JwtService jwtService;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User foundUser = userRepository.findByUsername(username)
@@ -41,8 +44,10 @@ public class AuthenticationService implements UserDetailsService {
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, password);
         Authentication authenticatedUser = authenticationManager.authenticate(authentication);
 
-        // TODO
-        return null;
+        String token = jwtService.generateToken(authenticatedUser);
+        Date expiresAt = jwtService.getExpirationFromToken(token);
+
+        return new JwtResponse(token, "Bearer", expiresAt);
     }
 
 }
