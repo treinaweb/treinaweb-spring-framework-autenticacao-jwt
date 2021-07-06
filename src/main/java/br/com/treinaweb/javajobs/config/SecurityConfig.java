@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import br.com.treinaweb.javajobs.filters.ExceptionHandlerFilter;
 import br.com.treinaweb.javajobs.filters.JwtRequestFilter;
 import br.com.treinaweb.javajobs.services.AuthenticationService;
 
@@ -30,6 +31,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
+    @Autowired
+    private ExceptionHandlerFilter exceptionHandlerFilter;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf()
@@ -44,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(exceptionHandlerFilter, JwtRequestFilter.class);
     }
 
     @Override
